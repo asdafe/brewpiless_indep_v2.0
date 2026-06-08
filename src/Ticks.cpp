@@ -23,13 +23,8 @@
 
 // return time that has passed since timeStamp, take overflow into account
 inline ticks_seconds_t timeSince(ticks_seconds_t currentTime, ticks_seconds_t previousTime){
-	if(currentTime>=previousTime){
-		return currentTime - previousTime;
-	}
-	else{
-		// overflow has occurred
-		return (currentTime + 1440) - (previousTime +1440); // add a day to both for calculation
-	}
+	// For unsigned tick counters, wrap-around arithmetic already handles overflow correctly.
+	return currentTime - previousTime;
 }
 
 // return time that has passed since timeStamp, take overflow into account

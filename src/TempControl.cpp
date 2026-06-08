@@ -420,6 +420,7 @@ void TempControl::updateState(void){
 						state = WAITING_TO_COOL;
 					}
 					else{
+						lastCoolTime = secs;
 						state = COOLING;
 					}
 				}
@@ -443,6 +444,7 @@ void TempControl::updateState(void){
 						state = WAITING_TO_HEAT;
 					}
 					else{
+						lastHeatTime = secs;
 						state = HEATING;
 					}
 				}
@@ -465,7 +467,6 @@ void TempControl::updateState(void){
 		case COOLING_MIN_TIME:
 		{
 			doNegPeakDetect=true;
-			lastCoolTime = secs;
 			updateEstimatedPeak(cc.maxCoolTimeForEstimate, cs.coolEstimator, sinceIdle);
 			state = COOLING; // set to cooling here, so the display of COOLING/COOLING_MIN_TIME is correct
 
@@ -477,6 +478,7 @@ void TempControl::updateState(void){
 				if(sinceIdle > MIN_COOL_ON_TIME){
 				#endif
 					cv.negPeakEstimate = cv.estimatedPeak; // remember estimated peak when I switch to IDLE, to adjust estimator later
+					lastCoolTime = secs;
 					state=IDLE;
 					break;
 				}
@@ -491,7 +493,6 @@ void TempControl::updateState(void){
 		case HEATING_MIN_TIME:
 		{
 			doPosPeakDetect=true;
-			lastHeatTime=secs;
 			updateEstimatedPeak(cc.maxHeatTimeForEstimate, cs.heatEstimator, sinceIdle);
 			state = HEATING; // reset to heating here, so the display of HEATING/HEATING_MIN_TIME is correct
 
@@ -503,6 +504,7 @@ void TempControl::updateState(void){
 				if(sinceIdle > MIN_HEAT_ON_TIME){
 				#endif
 					cv.posPeakEstimate=cv.estimatedPeak; // remember estimated peak when I switch to IDLE, to adjust estimator later
+					lastHeatTime = secs;
 					state=IDLE;
 					break;
 				}

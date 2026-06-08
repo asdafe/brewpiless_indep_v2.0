@@ -123,14 +123,20 @@ bool BrewPiProxy::ambientSensorConnected(void)
 }
 
 uint32_t BrewPiProxy::getStatusTime(void){
-	uint16_t time = UINT16_MAX; // init to max
+	uint32_t time = UINT32_MAX; // init to max
 	uint8_t state = tempControl.getState();
-	uint16_t sinceIdleTime = tempControl.timeSinceIdle();
+	uint32_t sinceIdleTime = tempControl.timeSinceIdle();
 	if(state==IDLE){
-		time = 	min(tempControl.timeSinceCooling(), tempControl.timeSinceHeating());
+		time = min(tempControl.timeSinceCooling(), tempControl.timeSinceHeating());
 	}
-	else if(state==COOLING || state==HEATING || state==HEAT_AND_COOL){
-		time = sinceIdleTime;
+	else if(state==COOLING){
+		time = tempControl.timeSinceCooling();
+	}
+	else if(state==HEATING){
+		time = tempControl.timeSinceHeating();
+	}
+	else if(state==HEAT_AND_COOL){
+		time = min(tempControl.timeSinceCooling(), tempControl.timeSinceHeating());
 	}
 	else if(state==COOLING_MIN_TIME){
 		time =(tempControl.cc.minCoolTime > sinceIdleTime)? (tempControl.cc.minCoolTime -sinceIdleTime):0;
@@ -141,7 +147,7 @@ uint32_t BrewPiProxy::getStatusTime(void){
 	else if(state == WAITING_TO_COOL || state == WAITING_TO_HEAT){
 		time = tempControl.getWaitTime();
 	}
-	return (uint32_t) time;
+	return time;
 }
 
 

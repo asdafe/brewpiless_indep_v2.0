@@ -110,6 +110,10 @@
                     // Parse LogOffset header as integer to avoid string/number issues
                     var lo = xhr.getResponseHeader("LogOffset");
                     t.startOff = (lo !== null && lo !== undefined) ? parseInt(lo, 10) : null;
+                    // Save LogOffset to sessionStorage for persistence across page refresh
+                    if (typeof sessionStorage != "undefined" && t.startOff !== null) {
+                        sessionStorage.setItem("chartStartOff", t.startOff.toString());
+                    }
                     //t.getLogName();
                     //console.log("new chart, offset="+t.startOff);
                     if (t.chart.calibrating) {
@@ -187,6 +191,13 @@
             if (this.running) return;
             this.running = true;
             this.offset = 0;
+            // Restore LogOffset from sessionStorage for chart continuity after page refresh
+            if (typeof sessionStorage != "undefined") {
+                var savedStartOff = sessionStorage.getItem("chartStartOff");
+                if (savedStartOff !== null) {
+                    this.startOff = parseInt(savedStartOff, 10);
+                }
+            }
             this.reqdata();
         },
         reqnow: function() {

@@ -219,7 +219,7 @@ void LcdDisplay::printMode(void){
 
 // print the current state on the last line of the lcd
 void LcdDisplay::printState(void){
-	uint16_t time = UINT16_MAX; // init to max
+	uint32_t time = UINT32_MAX; // init to max
 	uint8_t state = tempControl.getDisplayState();
 	if(state != stateOnDisplay){ //only print static text when state has changed
 		stateOnDisplay = state;
