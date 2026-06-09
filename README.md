@@ -1,8 +1,7 @@
 # BrewPiLess — Independent Heat/Cool Modification (Source Package)
 
 Bu pakette `feature/independent-heat-cool` branch'inde yaptığım değişikliklerin
-kaynak dosyaları var. İstersen doğrudan bu dosyaları kendi klonunda
-override edersin, istersen aşağıdaki `git apply` yolunu kullanırsın.
+kaynak dosyaları var. 
 
 ## İçerik
 
@@ -25,70 +24,6 @@ wdoc/                     ← Önceden derlenmiş C header'lar (gz web UI binary
   english_*.h             ← Bunları src/ ile aynı build path'ine koy
   chinese_*.h                → platformio otomatik wdoc/*.h'i include eder
   ... 49 dosya toplam
-
-plan/MODIFICATION_PLAN.md ← Tasarım kararları, edge case'ler, doğrulama
-```
-
-## Yöntem A — git apply (en temiz)
-
-```bash
-# 1. BrewPiLess'in güncel master'ını klonla
-git clone --depth 50 https://github.com/vitotai/BrewPiLess.git
-cd BrewPiLess
-
-# 2. Yeni branch aç
-git checkout -b feature/independent-heat-cool
-
-# 3. code-only.patch'i uygula
-git apply /path/to/code-only.patch
-
-# 4. (opsiyonel) wdoc/ header'larını da atla — grunt çalıştırmak istemiyorsan
-cp -r /path/to/wdoc/* wdoc/
-
-# 5. Build
-pio run -e esp32
-```
-
-`.bin` çıktısı: `.pio/build/esp32/firmware.bin`
-
-## Yöntem B — Manuel dosya kopyalama
-
-Eğer `git apply` kullanmak istemezsen, bu paketteki dosyaları doğrudan
-kendi klonundaki yerlerine kopyala:
-
-```bash
-# Kendi klonun
-LOCAL=/path/to/your/BrewPiLess
-
-cp src/*              $LOCAL/src/
-cp htmljs/src/*       $LOCAL/htmljs/src/
-cp htmljs/src/js/*    $LOCAL/htmljs/src/js/
-cp htmljs/src/locales/*  $LOCAL/htmljs/src/locales/
-cp wdoc/*             $LOCAL/wdoc/         # wdoc/ yoksa mkdir
-cp plan/MODIFICATION_PLAN.md $LOCAL/
-```
-
-Sonra `pio run -e esp32`.
-
-## Yöntem C — Sıfırdan değişiklik yap (öğrenmek istiyorsan)
-
-1. `code-only.patch` dosyasını bir editörde aç (gerrit-style diff)
-2. Her bloğu kendi dosyalarına uygula, anlamaya çalış
-3. `MODIFICATION_PLAN.md` ile karşılaştır, tasarım gerekçelerini oku
-4. Kendi varyasyonlarını yaz (örn. hysteresis genişliği, ayrı fan kontrolü vs.)
-
-## Build ortamı
-
-İhtiyacın olanlar:
-- **PlatformIO** (Python 3 ile): `pip install platformio`
-- (opsiyonel) Web UI'ı sıfırdan derlemek istersen: Node.js + `cd htmljs && npm install && npx grunt i18n`
-
-ESP32 derlemek için başka bir şey gerekmiyor — PlatformIO toolchain'i otomatik indiriyor.
-
-## Sadece .bin istiyorsan
-
-`/path/to/BrewPiLess-0.3.0-indep-esp32.bin` dosyası kullanıma hazır.
-Web arayüzü firmware içinde gömülü, ayrıca dosya yüklemeye gerek yok.
 
 ## Değişen dosyaların kısa özeti
 
@@ -129,5 +64,3 @@ Web arayüzü firmware içinde gömülü, ayrıca dosya yüklemeye gerek yok.
 - `control_independent`, `control_setheattemp`, `control_setcooltemp`,
   `control_independent_help` anahtarları eklendi (7 dil)
 
-### wdoc/*.h
-- grunt i18n + xxd -i ile yeniden üretildi (yeni web UI artık firmware'de)
