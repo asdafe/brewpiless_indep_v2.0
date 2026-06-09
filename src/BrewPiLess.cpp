@@ -1699,7 +1699,14 @@ void wiFiEvent(const char* msg){
 
 	}
 	#if SMART_DISPLAY
-	smartDisplay.setIp(WiFi.localIP());
+	// update SmartDisplay IP and force primary display when connected
+	if(WiFi.status() == WL_CONNECTED){
+		smartDisplay.setIp(WiFi.localIP());
+		sharedDisplayManager.forcePrimary(true); // stay on main info screen
+	}else{
+		smartDisplay.setIp(WiFi.localIP());
+		sharedDisplayManager.forcePrimary(false); // resume rotation when disconnected
+	}
 	#endif
 }
 
